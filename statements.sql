@@ -115,7 +115,6 @@ ORDER BY bucket;
 
 -- ad-hoc queries
 -- find max temperature (°C) and humidity (%) for last 3 hours in 15 minute time periods
--- https://docs.timescale.com/latest/using-timescaledb/reading-data#select
 SELECT time_bucket('15 minutes', time) AS fifteen_min,
        device_id,
        count(time),
@@ -128,7 +127,7 @@ GROUP BY fifteen_min, device_id
 ORDER BY fifteen_min DESC, max_temp desc;
 
 -- find temperature (°C) anomalies (delta > ~5°F)
--- https://docs.timescale.com/latest/using-timescaledb/reading-data#delta
+
 WITH ht AS (SELECT time,
                    temperature,
                    abs(temperature - lag(temperature) over (ORDER BY time)) AS delta
@@ -140,7 +139,7 @@ ORDER BY ht.time;
 
 -- find three minute moving average of temperature (°F) for last day
 -- (5 sec. interval * 36 rows = 3 min.)
--- https://docs.timescale.com/latest/using-timescaledb/reading-data#moving-average
+
 SELECT time,
        avg((temperature * 1.9) + 32) over (ORDER BY time
            ROWS BETWEEN 35 PRECEDING AND CURRENT ROW)
@@ -151,7 +150,7 @@ WHERE device_id = 'Manufacturing Plant'
 ORDER BY time desc;
 
 -- find average humidity (%) for last 12 hours in 5-minute time periods
--- https://docs.timescale.com/latest/using-timescaledb/reading-data#time-bucket
+
 SELECT time_bucket('5 minutes', time) AS time_period,
        avg(humidity) AS avg_humidity
 FROM sensor_data
@@ -162,7 +161,7 @@ GROUP BY time_period
 ORDER BY time_period desc;
 
 -- calculate histograms of avg. temperature (°F) between 55-85°F in 5°F buckets during last 2 days
--- https://docs.timescale.com/latest/using-timescaledb/reading-data#histogram
+
 SELECT device_id,
        count(time),
        histogram((temperature * 1.9) + 32, 55.0, 85.0, 5)
@@ -172,7 +171,7 @@ WHERE temperature IS NOT NULL
 GROUP BY device_id;
 
 -- find average light value for last 90 minutes in 5-minute time periods
--- https://docs.timescale.com/latest/using-timescaledb/reading-data#time-bucket
+
 SELECT device_id,
        time_bucket('5 minutes', time) AS five_min,
        avg(case when light = 't' then 1 else 0 end) AS avg_light
