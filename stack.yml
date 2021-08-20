@@ -1,0 +1,53 @@
+version: "3.9"  # optional since v1.27.0
+services:
+  timescaledb:
+    image: timescale/timescaledb:2.0.0-pg12
+    ports:
+      - "5432:5432/tcp"
+    networks:
+      - demo-iot-net
+    environment:
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: postgres1234
+      POSTGRES_DB: demo_iot
+    deploy:
+      restart_policy:
+        condition: on-failure
+    volumes:
+      - "$HOME/data/postgres:/var/lib/postgresql/data"
+  grafana:
+    image: grafana/grafana:7.5.2
+    ports:
+      - "3000:3000/tcp"
+    networks:
+      - demo-iot-net
+    deploy:
+      restart_policy:
+        condition: on-failure
+    volumes:
+      - "$HOME/data/grafana:/var/lib/grafana"
+    user: $ID:1
+  mosquitto:
+    image: eclipse-mosquitto:2.0.9
+    ports:
+      - "1883:1883/tcp"
+    networks:
+      - demo-iot-net
+    deploy:
+      restart_policy:
+        condition: on-failure
+    volumes:
+      - "$HOME/data/mosquitto/config:/mosquitto/config"
+      - "$HOME/data/mosquitto/data:/mosquitto/data"
+      - "$HOME/data/mosquitto/log:/mosquitto/log"
+  pgadmin:
+    image: biarms/pgadmin4:4.21
+    ports:
+      - "5050:5050/tcp"
+    networks:
+      - demo-iot-net
+    deploy:
+      restart_policy:
+        condition: on-failure
+networks:
+  demo-iot-net:
