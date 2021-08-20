@@ -1,7 +1,5 @@
 # Docker Instructions
 
-Why are we running an earlier version of TimescaleDB (2.0.0)? `signal 11: Segmentation fault`: <https://github.com/timescale/timescaledb/issues/2968>
-
 Extract `mosquitto.conf`.
 
 ```shell
@@ -23,12 +21,10 @@ mkdir -p ~/data/mosquitto/log
 Clone git project on Gateway versus copying.
 
 ```shell
-git clone --branch v2021-03 --single-branch --depth 1 \
-    https://github.com/garystafford/iot-analytics-at-the-edge.git
-
+git clone 
 cp ./docker/mosquitto.conf ~/data/mosquitto/config/
 
-# EDGE_DEVICE_HOST=192.168.1.12
+# EDGE_DEVICE_HOST=192.168.0.105
 # scp -i ~/.ssh/rasppi docker/mosquitto.conf \
 #     pi@${EDGE_DEVICE_HOST}:~/data/mosquitto/config/
 ```
@@ -90,7 +86,3 @@ MOSQUITTO_CONTAINER=$(docker ps -q \
     --filter='name=iot_mosquitto.1' --format '{{.Names}}')
 docker exec -it ${MOSQUITTO_CONTAINER} mosquitto_sub -h localhost -t sensor/output
 ```
-
-## $SYS Topics
-
-<https://github.com/mqtt/mqtt.org/wiki/SYS-Topics>
