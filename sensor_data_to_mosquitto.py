@@ -11,16 +11,10 @@ from randmac import RandMac
 import paho.mqtt.publish as publish
 from pytz import timezone
 
-# from Sensors import Sensors
-
 # Sensor to Mosquitto Script
-# Author: Gary A. Stafford
-# Date: 2021-03-26
 # Usage: python3 sensor_data_to_mosquitto.py \
-#           --host "192.168.1.12" --port 1883 \
+#           --host "192.168.0.105" --port 1883 \
 #           --topic "sensor/output" --frequency 10
-
-# sensors = Sensors()
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
@@ -32,7 +26,6 @@ def main():
 
 
 def get_readings():
-    # sensors.led_state(0)
     random_bit1 = random.getrandbits(1)
     random_bit2 = random.getrandbits(1)
     random_boolean1 = bool(random_bit1)
@@ -49,16 +42,16 @@ def get_readings():
 
 
     message = {
-        "time": datetime.now(timezone("UTC")),  # get_mac_address(),
+        "time": datetime.now(timezone("UTC")),
         "device_id": place_deviceID,
         "data": {
-            "temperature": payload_dht,  # ["temperature"],
-            "humidity": payload_dht,  # ["humidity"],
-            "lpg": payload_gas,  # ["lpg"],
-            "co": payload_gas,  # ["co"],
-            "smoke": payload_gas,  # ["smoke"],
-            "light": payload_light,  # ["light"],
-            "motion": payload_motion  # ["motion"]
+            "temperature": payload_dht,
+            "humidity": payload_dht,
+            "lpg": payload_gas,
+            "co": payload_gas,
+            "smoke": payload_gas,
+            "light": payload_light,
+            "motion": payload_motion
         }
     }
 
